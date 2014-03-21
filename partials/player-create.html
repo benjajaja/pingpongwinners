@@ -1,0 +1,19 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Crear jugador</h3>
+  </div>
+  <div class="panel-body">
+  	<form role="form" ng-submit="submit()">
+      
+      <div class="form-group">
+        <label for="exampleInputEmail1">Nombre corto</label>
+        <input type="text" class="form-control" placeholder="Nombre corto y único, solo se permite a-z" ng-model="player.name">
+
+        <label for="exampleInputEmail1">Nombre largo</label>
+        <input type="text" class="form-control" placeholder="Nombre largo, por ejemplo: &quot;Paquico&quot;" ng-model="player.fullName">
+      </div>
+
+      <button type="submit" class="btn btn-default">Crear</button>
+    </form>
+  </div>
+</div>

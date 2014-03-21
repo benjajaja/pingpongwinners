@@ -1,0 +1,27 @@
+<div class="jumbotron">
+	<div class="pull-right"><img src="{{player.avatarURL}}" class="img-circle"/></div>
+	<h1>{{player.name}}</h1>
+	<h6>{{player.fullName}}</h6>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Partidas</h3>
+  </div>
+  <div class="panel-body">
+  	<div class="row">
+  		<dl class="col-md-4">
+	    	<dt>Total de partidas:</dt>
+	    	<dd>{{player.totalMatches}}</dd>
+	    </dl>
+	    <dl class="col-md-4">
+	    	<dt>Victorias:</dt>
+	    	<dd>{{player.victories}}</dd>
+	    </dl>
+	    <dl class="col-md-4">
+	    	<dt>Derrotas:</dt>
+	    	<dd>{{player.defeats}}</dd>
+	    </dl>
+	</div>
+  </div>
+</div>
