@@ -49,6 +49,12 @@ var Matches;
                 console.log(arguments);
             });
         };
+
+        $http.get('api/players').success(function (data) {
+            // FIXME: uncomment if when API is ready
+            if (typeof data === 'object')
+                $scope.players = data;
+        });
     }
     Matches.MatchCreateCtrl = MatchCreateCtrl;
 })(Matches || (Matches = {}));

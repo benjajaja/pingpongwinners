@@ -67,5 +67,11 @@ module Matches {
 				console.log(arguments);
 			});
 		};
+
+		$http.get('api/players').success(function(data: Players.IPlayer[]) {
+			// FIXME: uncomment if when API is ready
+			if (typeof data === 'object')
+				$scope.players = data;
+		});
 	}
 }
