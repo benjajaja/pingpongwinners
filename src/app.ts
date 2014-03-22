@@ -1,5 +1,6 @@
 /// <reference path="../typings/angularjs/angular.d.ts" />
 /// <reference path="../typings/angularjs/angular-route.d.ts" />
+/// <reference path="../typings/moment/moment.d.ts" />
 
 /// <reference path="Navbar.ts" />
 /// <reference path="Matches.ts" />
@@ -16,6 +17,8 @@ interface IServerError {
 	code:string;
 	message:string;
 }
+
+moment.lang('es');
 
 var pingpong = angular.module('pingpong', ['ngRoute', 'ui.bootstrap', 'ngProgress']);
 

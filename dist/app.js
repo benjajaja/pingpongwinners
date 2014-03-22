@@ -9,7 +9,11 @@ var Matches;
 (function (Matches) {
     function MatchListCtrl($scope, $http) {
         $http.get('api/matches').success(function (data) {
-            $scope.matches = data;
+            $scope.matches = data.map(function (match) {
+                var date = moment(match.date);
+                match.date = date.calendar();
+                return match;
+            });
         });
     }
     Matches.MatchListCtrl = MatchListCtrl;
@@ -34,7 +38,7 @@ var Matches;
 
         $scope.submit = function () {
             var data = {
-                date: $scope.date,
+                date: new Date($scope.date.getTime() + ($scope.time.getHours() * 3600000 + $scope.time.getMinutes() * 60000)),
                 winner: $scope.winner,
                 loser: $scope.loser,
                 result: $scope.result
@@ -84,9 +88,12 @@ var Players;
 })(Players || (Players = {}));
 /// <reference path="../typings/angularjs/angular.d.ts" />
 /// <reference path="../typings/angularjs/angular-route.d.ts" />
+/// <reference path="../typings/moment/moment.d.ts" />
 /// <reference path="Navbar.ts" />
 /// <reference path="Matches.ts" />
 /// <reference path="Players.ts" />
+
+moment.lang('es');
 
 var pingpong = angular.module('pingpong', ['ngRoute', 'ui.bootstrap', 'ngProgress']);
 

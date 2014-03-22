@@ -22,14 +22,38 @@ server.use(function(req, res, next) {
 
 var data = require('./data.js');
 
+function playerData(player) {
+	return _.extend({
+		victories: data.matches.reduce(function(count, match) {
+			if (match.winner.name === player.name) {
+				count += 1;
+			}
+			return count;
+		}, 0),
+		defeats: data.matches.reduce(function(count, match) {
+			if (match.loser.name === player.name) {
+				count += 1;
+			}
+			return count;
+		}, 0),
+		totalMatches: data.matches.reduce(function(count, match) {
+			if (match.winner.name === player.name || match.loser.name === player.name) {
+				count += 1;
+			}
+			return count;
+		}, 0)
+	}, player);
+}
+
 server.get('/api/matches', function (req, res, next) {
  	res.send(data.matches);
  	return next();
 });
 
-
 server.get('/api/players', function (req, res, next) {
-	res.send(data.players);
+	res.send(_.sortBy(data.players.map(playerData), function(player) {
+		return 0 - (player.victories - player.defeats);
+	}));
  	
  	return next();
 });
@@ -40,7 +64,7 @@ server.get('/api/players/:name', function (req, res, next) {
  	});
 
  	if (typeof player !== 'undefined') {
- 		res.send(player);
+ 		res.send(playerData(player));
  		//res.send(player);
  		return next();
  	} else {

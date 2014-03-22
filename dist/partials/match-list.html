@@ -1,10 +1,12 @@
 <table class="table">
   <tr>
+    <th>Fecha</th>
     <th>Winner</th>
     <th>Loser</th>
     <th>Resultado</th>
   </tr>
   <tr ng-repeat="match in matches">
+    <td>{{match.date}}</td>
     <td><a href="#/players/{{match.winner.name}}">{{match.winner.fullName}}</a></td>
     <td><a href="#/players/{{match.loser.name}}">{{match.loser.fullName}}</a></td>
     <td>{{match.result.winnerPoints}}:{{match.result.loserPoints}}</td>

@@ -4,6 +4,7 @@ interface IMatchListScope extends ng.IScope {
 
 interface IMatchCreateScope extends ng.IScope, INewMatch {
 	players: Players.IPlayer[];
+	time: Date;
 	submit: Function;
 }
 
@@ -13,6 +14,7 @@ interface IResult {
 }
 
 interface IMatch {
+	date: string;
 	winner: Players.IPlayer;
 	loser: Players.IPlayer;
 	result: IResult;
@@ -28,7 +30,11 @@ interface INewMatch {
 module Matches {
 	export function MatchListCtrl($scope: IMatchListScope, $http: ng.IHttpService) {
 		$http.get('api/matches').success(function(data: IMatch[]) {
-			$scope.matches = data;
+			$scope.matches = data.map(function(match) {
+				var date = moment(match.date);
+				match.date = date.calendar();
+				return match;
+			});
 		});
 	}
 
@@ -51,7 +57,7 @@ module Matches {
 
 		$scope.submit = function() {
 			var data:INewMatch = {
-				date: $scope.date,
+				date: new Date($scope.date.getTime() + ($scope.time.getHours() * 3600000 + $scope.time.getMinutes() * 60000)),
 			 	winner: $scope.winner,
 			 	loser: $scope.loser,
 			 	result: $scope.result
