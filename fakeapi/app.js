@@ -64,7 +64,11 @@ server.get('/api/players/:name', function (req, res, next) {
  	});
 
  	if (typeof player !== 'undefined') {
- 		res.send(playerData(player));
+ 		res.send(_.extend(playerData(player), {
+ 			matches: _.sortBy(_.filter(data.matches, function(match) {
+ 				return match.winner.name === player.name || match.loser.name === player.name;
+ 			}), 'date')
+ 		}));
  		//res.send(player);
  		return next();
  	} else {

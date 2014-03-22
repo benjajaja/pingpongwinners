@@ -1,6 +1,7 @@
 /// <reference path="../typings/angularjs/angular.d.ts" />
 /// <reference path="../typings/angularjs/angular-route.d.ts" />
 /// <reference path="../typings/moment/moment.d.ts" />
+/// <reference path="../typings/d3/d3.d.ts" />
 
 /// <reference path="Navbar.ts" />
 /// <reference path="Matches.ts" />

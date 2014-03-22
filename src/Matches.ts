@@ -1,5 +1,5 @@
 interface IMatchListScope extends ng.IScope {
-	matches: IMatch[];
+	matches: Matches.IMatch[];
 }
 
 interface IMatchCreateScope extends ng.IScope, INewMatch {
@@ -13,12 +13,7 @@ interface IResult {
 	loserPoints: number;
 }
 
-interface IMatch {
-	date: string;
-	winner: Players.IPlayer;
-	loser: Players.IPlayer;
-	result: IResult;
-}
+
 
 interface INewMatch {
 	date: Date;
@@ -28,6 +23,13 @@ interface INewMatch {
 }
 
 module Matches {
+	export interface IMatch {
+		date: string;
+		winner: Players.IPlayer;
+		loser: Players.IPlayer;
+		result: IResult;
+	}
+
 	export function MatchListCtrl($scope: IMatchListScope, $http: ng.IHttpService) {
 		$http.get('api/matches').success(function(data: IMatch[]) {
 			$scope.matches = data.map(function(match) {
