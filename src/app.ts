@@ -12,6 +12,11 @@ interface IProgress {
 	reset: () => void;
 }
 
+interface IServerError {
+	code:string;
+	message:string;
+}
+
 var pingpong = angular.module('pingpong', ['ngRoute', 'ui.bootstrap', 'ngProgress']);
 
 pingpong.config(function($routeProvider: ng.route.IRouteProvider, $httpProvider: ng.IHttpProvider) {
@@ -51,10 +56,10 @@ pingpong.config(function($routeProvider: ng.route.IRouteProvider, $httpProvider:
 	});
 
 	$httpProvider.interceptors.push(function($q: ng.IQService, $injector: ng.auto.IInjectorService) {
+
 	    return {
 	    	'request': function(config: any) {
-	    		if (config.url.indexOf('partials/') !== 0) {
-		    		console.log('-> '+ config.url, config);
+	    		if (config.url.indexOf('api/') === 0) {
 		        	$injector.invoke(function(ngProgress: IProgress) {
 		        		ngProgress.stop();
 		        		ngProgress.start();
@@ -65,15 +70,25 @@ pingpong.config(function($routeProvider: ng.route.IRouteProvider, $httpProvider:
 	    	},
 
 	    	'response': function(response: ng.IHttpPromiseCallbackArg<any>) {
-	    		if (response.config.url.indexOf('partials/') !== 0) {
-		    		console.log('<- '+ response.config.url, response);
-					$injector.invoke(function(ngProgress: IProgress) {
+	    		if (response.config.url.indexOf('api/') === 0) {
+	    			$injector.invoke(function(ngProgress: IProgress) {
 		        		ngProgress.complete();
 		        	});
 		        }
 
 				return response || $q.when(response);
 			},
+
+			'responseError': function(rejection: ng.IHttpPromiseCallbackArg<IServerError>) {
+				if (rejection.config.url.indexOf('api/') === 0) {
+					window.alert('Error: ' + rejection.data.message);
+					$injector.invoke(function(ngProgress: IProgress) {
+		        		ngProgress.reset();
+		        	});
+		        }
+
+		        return $q.reject(rejection);
+		    }
 	    };
 	});
 });

@@ -11,16 +11,25 @@ server.use(restify.queryParser());
 server.use(restify.bodyParser());
 server.use(restify.CORS());
 
+server.use(function(req, res, next) {
+	if (req.url.indexOf('/api') === 0) {
+		setTimeout(next, 500);
+		
+	} else {
+		next();
+	}
+});
+
 var data = require('./data.js');
 
 server.get('/api/matches', function (req, res, next) {
- 	setTimeout(res.send.bind(res, data.matches), 1000);
+ 	res.send(data.matches);
  	return next();
 });
 
 
 server.get('/api/players', function (req, res, next) {
-	setTimeout(res.send.bind(res, data.players), 1000);
+	res.send(data.players);
  	
  	return next();
 });
@@ -31,7 +40,7 @@ server.get('/api/players/:name', function (req, res, next) {
  	});
 
  	if (typeof player !== 'undefined') {
- 		setTimeout(res.send.bind(res, player), 1000);
+ 		res.send(player);
  		//res.send(player);
  		return next();
  	} else {

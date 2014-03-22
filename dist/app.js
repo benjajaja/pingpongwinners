@@ -44,9 +44,6 @@ var Matches;
 
             $http.post('api/matches', data).success(function (data) {
                 $location.path('matches');
-            }).error(function (error, status) {
-                alert('Error: ' + error.message);
-                console.log(arguments);
             });
         };
 
@@ -68,12 +65,6 @@ var Players;
     function PlayerDetailCtrl($scope, $routeParams, $http, $location) {
         $http.get('api/players/' + $routeParams.name).success(function (data) {
             $scope.player = data;
-        }).error(function (error, status) {
-            if (status === 404) {
-                $location.path('/404');
-            } else {
-                $location.path('/error');
-            }
         });
     }
     Players.PlayerDetailCtrl = PlayerDetailCtrl;
@@ -86,9 +77,6 @@ var Players;
         $scope.submit = function () {
             $http.post('api/players/' + $scope.player.name, $scope.player).success(function (data) {
                 $location.path('players/' + data.name);
-            }).error(function (error, status) {
-                alert('Error: ' + error.message);
-                console.log(arguments);
             });
         };
     }
@@ -131,8 +119,7 @@ pingpong.config(function ($routeProvider, $httpProvider) {
     $httpProvider.interceptors.push(function ($q, $injector) {
         return {
             'request': function (config) {
-                if (config.url.indexOf('partials/') !== 0) {
-                    console.log('-> ' + config.url, config);
+                if (config.url.indexOf('api/') === 0) {
                     $injector.invoke(function (ngProgress) {
                         ngProgress.stop();
                         ngProgress.start();
@@ -142,14 +129,23 @@ pingpong.config(function ($routeProvider, $httpProvider) {
                 return config || $q.when(config);
             },
             'response': function (response) {
-                if (response.config.url.indexOf('partials/') !== 0) {
-                    console.log('<- ' + response.config.url, response);
+                if (response.config.url.indexOf('api/') === 0) {
                     $injector.invoke(function (ngProgress) {
                         ngProgress.complete();
                     });
                 }
 
                 return response || $q.when(response);
+            },
+            'responseError': function (rejection) {
+                if (rejection.config.url.indexOf('api/') === 0) {
+                    window.alert('Error: ' + rejection.data.message);
+                    $injector.invoke(function (ngProgress) {
+                        ngProgress.reset();
+                    });
+                }
+
+                return $q.reject(rejection);
             }
         };
     });

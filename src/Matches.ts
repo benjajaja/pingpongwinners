@@ -62,9 +62,6 @@ module Matches {
 			$http.post('api/matches', data).success(function(data: Players.IPlayer) {
 				$location.path('matches');
 
-			}).error(function(error, status) {
-				alert('Error: ' + error.message);
-				console.log(arguments);
 			});
 		};
 
