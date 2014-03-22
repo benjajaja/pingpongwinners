@@ -55,7 +55,7 @@ module Players {
 				$location.path('players/' + data.name);
 
 			}).error(function(error, status) {
-				alert('Error: ' + error);
+				alert('Error: ' + error.message);
 				console.log(arguments);
 			});
 		};
