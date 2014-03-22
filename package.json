@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/gipsy-king/pingpongwinners/issues"
   },
-  "homepage": "https://github.com/gipsy-king/pingpongwinners"
+  "homepage": "https://github.com/gipsy-king/pingpongwinners",
+  "dependencies": {
+    "underscore": "~1.6.0",
+    "restify": "~2.6.3"
+  }
 }
