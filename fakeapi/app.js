@@ -14,13 +14,14 @@ server.use(restify.CORS());
 var data = require('./data.js');
 
 server.get('/api/matches', function (req, res, next) {
- 	res.send(data.matches);
+ 	setTimeout(res.send.bind(res, data.matches), 1000);
  	return next();
 });
 
 
 server.get('/api/players', function (req, res, next) {
- 	res.send(data.players);
+	setTimeout(res.send.bind(res, data.players), 1000);
+ 	
  	return next();
 });
 
@@ -30,7 +31,8 @@ server.get('/api/players/:name', function (req, res, next) {
  	});
 
  	if (typeof player !== 'undefined') {
- 		res.send(player);
+ 		setTimeout(res.send.bind(res, player), 1000);
+ 		//res.send(player);
  		return next();
  	} else {
  		res.send(404, new Error('player not found'));

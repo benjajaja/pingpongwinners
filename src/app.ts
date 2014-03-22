@@ -5,11 +5,21 @@
 /// <reference path="Matches.ts" />
 /// <reference path="Players.ts" />
 
-var pingpong = angular.module('pingpong', ['ngRoute', 'ui.bootstrap']);
+interface IProgress {
+	start: () => void;
+	complete: () => void;
+	stop: () => void;
+	reset: () => void;
+}
 
-pingpong.config(['$routeProvider', function($routeProvider: ng.route.IRouteProvider) {
+var pingpong = angular.module('pingpong', ['ngRoute', 'ui.bootstrap', 'ngProgress']);
+
+pingpong.config(function($routeProvider: ng.route.IRouteProvider, $httpProvider: ng.IHttpProvider) {
 
 	$routeProvider
+	.when('/', {
+		redirectTo: '/matches'
+	})
 	.when('/matches', {
 		templateUrl: 'partials/match-list.html',
 		controller: 'MatchListCtrl'
@@ -30,9 +40,6 @@ pingpong.config(['$routeProvider', function($routeProvider: ng.route.IRouteProvi
 		templateUrl: 'partials/player-detail.html',
 		controller: 'PlayerDetailCtrl'
 	})
-	.when('/', {
-		redirectTo: '/matches'
-	})
 	.when('/404', {
 		templateUrl: 'partials/404.html',
 	})
@@ -43,17 +50,46 @@ pingpong.config(['$routeProvider', function($routeProvider: ng.route.IRouteProvi
 		redirectTo: '/404'
 	});
 
-}]);
+	$httpProvider.interceptors.push(function($q: ng.IQService, $injector: ng.auto.IInjectorService) {
+	    return {
+	    	'request': function(config: any) {
+	    		if (config.url.indexOf('partials/') !== 0) {
+		    		console.log('-> '+ config.url, config);
+		        	$injector.invoke(function(ngProgress: IProgress) {
+		        		ngProgress.stop();
+		        		ngProgress.start();
+		        	});
+		        }
+
+	        	return config || $q.when(config);
+	    	},
+
+	    	'response': function(response: ng.IHttpPromiseCallbackArg<any>) {
+	    		if (response.config.url.indexOf('partials/') !== 0) {
+		    		console.log('<- '+ response.config.url, response);
+					$injector.invoke(function(ngProgress: IProgress) {
+		        		ngProgress.complete();
+		        	});
+		        }
+
+				return response || $q.when(response);
+			},
+	    };
+	});
+});
+
+
+
 
 
 pingpong.controller('NavbarCtrl', Navbar.NavbarCtrl);
 
 pingpong.controller('MatchListCtrl', Matches.MatchListCtrl);
 
-pingpong.controller('MatchCreateCtrl', ['$scope', '$http', '$location', Matches.MatchCreateCtrl]);
+pingpong.controller('MatchCreateCtrl', Matches.MatchCreateCtrl);
 
 pingpong.controller('PlayerListCtrl', Players.PlayerListCtrl);
 
-pingpong.controller('PlayerDetailCtrl', ['$scope', '$routeParams', '$http', '$location', Players.PlayerDetailCtrl]);
+pingpong.controller('PlayerDetailCtrl', Players.PlayerDetailCtrl);
 
-pingpong.controller('PlayerCreateCtrl', ['$scope', '$http', '$location', Players.PlayerCreateCtrl]);
+pingpong.controller('PlayerCreateCtrl', Players.PlayerCreateCtrl);

@@ -99,45 +99,71 @@ var Players;
 /// <reference path="Navbar.ts" />
 /// <reference path="Matches.ts" />
 /// <reference path="Players.ts" />
-var pingpong = angular.module('pingpong', ['ngRoute', 'ui.bootstrap']);
 
-pingpong.config([
-    '$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/matches', {
-            templateUrl: 'partials/match-list.html',
-            controller: 'MatchListCtrl'
-        }).when('/matches/create', {
-            templateUrl: 'partials/match-create.html',
-            controller: 'MatchCreateCtrl'
-        }).when('/players', {
-            templateUrl: 'partials/player-list.html',
-            controller: 'PlayerListCtrl'
-        }).when('/players/create', {
-            templateUrl: 'partials/player-create.html',
-            controller: 'PlayerCreateCtrl'
-        }).when('/players/:name', {
-            templateUrl: 'partials/player-detail.html',
-            controller: 'PlayerDetailCtrl'
-        }).when('/', {
-            redirectTo: '/matches'
-        }).when('/404', {
-            templateUrl: 'partials/404.html'
-        }).when('/error', {
-            templateUrl: 'partials/error.html'
-        }).otherwise({
-            redirectTo: '/404'
-        });
-    }]);
+var pingpong = angular.module('pingpong', ['ngRoute', 'ui.bootstrap', 'ngProgress']);
+
+pingpong.config(function ($routeProvider, $httpProvider) {
+    $routeProvider.when('/', {
+        redirectTo: '/matches'
+    }).when('/matches', {
+        templateUrl: 'partials/match-list.html',
+        controller: 'MatchListCtrl'
+    }).when('/matches/create', {
+        templateUrl: 'partials/match-create.html',
+        controller: 'MatchCreateCtrl'
+    }).when('/players', {
+        templateUrl: 'partials/player-list.html',
+        controller: 'PlayerListCtrl'
+    }).when('/players/create', {
+        templateUrl: 'partials/player-create.html',
+        controller: 'PlayerCreateCtrl'
+    }).when('/players/:name', {
+        templateUrl: 'partials/player-detail.html',
+        controller: 'PlayerDetailCtrl'
+    }).when('/404', {
+        templateUrl: 'partials/404.html'
+    }).when('/error', {
+        templateUrl: 'partials/error.html'
+    }).otherwise({
+        redirectTo: '/404'
+    });
+
+    $httpProvider.interceptors.push(function ($q, $injector) {
+        return {
+            'request': function (config) {
+                if (config.url.indexOf('partials/') !== 0) {
+                    console.log('-> ' + config.url, config);
+                    $injector.invoke(function (ngProgress) {
+                        ngProgress.stop();
+                        ngProgress.start();
+                    });
+                }
+
+                return config || $q.when(config);
+            },
+            'response': function (response) {
+                if (response.config.url.indexOf('partials/') !== 0) {
+                    console.log('<- ' + response.config.url, response);
+                    $injector.invoke(function (ngProgress) {
+                        ngProgress.complete();
+                    });
+                }
+
+                return response || $q.when(response);
+            }
+        };
+    });
+});
 
 pingpong.controller('NavbarCtrl', Navbar.NavbarCtrl);
 
 pingpong.controller('MatchListCtrl', Matches.MatchListCtrl);
 
-pingpong.controller('MatchCreateCtrl', ['$scope', '$http', '$location', Matches.MatchCreateCtrl]);
+pingpong.controller('MatchCreateCtrl', Matches.MatchCreateCtrl);
 
 pingpong.controller('PlayerListCtrl', Players.PlayerListCtrl);
 
-pingpong.controller('PlayerDetailCtrl', ['$scope', '$routeParams', '$http', '$location', Players.PlayerDetailCtrl]);
+pingpong.controller('PlayerDetailCtrl', Players.PlayerDetailCtrl);
 
-pingpong.controller('PlayerCreateCtrl', ['$scope', '$http', '$location', Players.PlayerCreateCtrl]);
+pingpong.controller('PlayerCreateCtrl', Players.PlayerCreateCtrl);
 //# sourceMappingURL=app.js.map
