@@ -43,23 +43,28 @@ var Matches;
             console.log(JSON.stringify(data));
 
             $http.post('api/matches', data).success(function (data) {
-                //$location.path('players/' + data.name);
+                $location.path('matches');
             }).error(function (error, status) {
-                alert('Error: ' + error);
+                alert('Error: ' + error.message);
                 console.log(arguments);
             });
         };
 
         $http.get('api/players').success(function (data) {
-            // FIXME: uncomment if when API is ready
-            if (typeof data === 'object')
-                $scope.players = data;
+            $scope.players = data;
         });
     }
     Matches.MatchCreateCtrl = MatchCreateCtrl;
 })(Matches || (Matches = {}));
 var Players;
 (function (Players) {
+    function PlayerListCtrl($scope, $http) {
+        $http.get('api/players').success(function (data) {
+            $scope.players = data;
+        });
+    }
+    Players.PlayerListCtrl = PlayerListCtrl;
+
     function PlayerDetailCtrl($scope, $routeParams, $http, $location) {
         $http.get('api/players/' + $routeParams.name).success(function (data) {
             $scope.player = data;
@@ -92,8 +97,8 @@ var Players;
 /// <reference path="../typings/angularjs/angular.d.ts" />
 /// <reference path="../typings/angularjs/angular-route.d.ts" />
 /// <reference path="Navbar.ts" />
-/// <reference path="matches/Matches.ts" />
-/// <reference path="players/Players.ts" />
+/// <reference path="Matches.ts" />
+/// <reference path="Players.ts" />
 var pingpong = angular.module('pingpong', ['ngRoute', 'ui.bootstrap']);
 
 pingpong.config([
@@ -104,6 +109,9 @@ pingpong.config([
         }).when('/matches/create', {
             templateUrl: 'partials/match-create.html',
             controller: 'MatchCreateCtrl'
+        }).when('/players', {
+            templateUrl: 'partials/player-list.html',
+            controller: 'PlayerListCtrl'
         }).when('/players/create', {
             templateUrl: 'partials/player-create.html',
             controller: 'PlayerCreateCtrl'
@@ -126,6 +134,8 @@ pingpong.controller('NavbarCtrl', Navbar.NavbarCtrl);
 pingpong.controller('MatchListCtrl', Matches.MatchListCtrl);
 
 pingpong.controller('MatchCreateCtrl', ['$scope', '$http', '$location', Matches.MatchCreateCtrl]);
+
+pingpong.controller('PlayerListCtrl', Players.PlayerListCtrl);
 
 pingpong.controller('PlayerDetailCtrl', ['$scope', '$routeParams', '$http', '$location', Players.PlayerDetailCtrl]);
 

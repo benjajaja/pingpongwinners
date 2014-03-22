@@ -6,6 +6,10 @@ interface IPlayerDetailParams {
 	name: string;
 }
 
+interface IPlayerListScope extends ng.IScope {
+	players: Players.IPlayer[];
+}
+
 interface IPlayerScope extends ng.IScope {
 	player: Players.IPlayer;
 }
@@ -21,6 +25,12 @@ module Players {
 	export interface IPlayer {
 		name: string;
 		fullName: string;
+	}
+
+	export function PlayerListCtrl($scope: IPlayerListScope, $http: ng.IHttpService) {
+		$http.get('api/players').success(function(data: IPlayer[]) {
+			$scope.players = data;
+		});
 	}
 
 	export function PlayerDetailCtrl($scope: IPlayerScope, $routeParams: IPlayerDetailParams, $http: ng.IHttpService, $location: ng.ILocationService) {

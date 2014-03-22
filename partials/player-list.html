@@ -1,0 +1,14 @@
+<table class="table">
+  <tr>
+    <th>Nombre</th>
+    <th>Victorias</th>
+    <th>Derrotas</th>
+    <th>Partidas</th>
+  </tr>
+  <tr ng-repeat="player in players">
+    <td><a href="#/players/{{player.name}}">{{player.fullName}}</a></td>
+    <td>{{player.victories}}</td>
+    <td>{{player.defeats}}</td>
+    <td>{{player.totalMatches}}</td>
+  </tr>
+</table>

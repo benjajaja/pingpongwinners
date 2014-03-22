@@ -2,8 +2,8 @@
 /// <reference path="../typings/angularjs/angular-route.d.ts" />
 
 /// <reference path="Navbar.ts" />
-/// <reference path="matches/Matches.ts" />
-/// <reference path="players/Players.ts" />
+/// <reference path="Matches.ts" />
+/// <reference path="Players.ts" />
 
 var pingpong = angular.module('pingpong', ['ngRoute', 'ui.bootstrap']);
 
@@ -17,6 +17,10 @@ pingpong.config(['$routeProvider', function($routeProvider: ng.route.IRouteProvi
 	.when('/matches/create', {
 		templateUrl: 'partials/match-create.html',
 		controller: 'MatchCreateCtrl'
+	})
+	.when('/players', {
+		templateUrl: 'partials/player-list.html',
+		controller: 'PlayerListCtrl'
 	})
 	.when('/players/create', {
 		templateUrl: 'partials/player-create.html',
@@ -47,6 +51,8 @@ pingpong.controller('NavbarCtrl', Navbar.NavbarCtrl);
 pingpong.controller('MatchListCtrl', Matches.MatchListCtrl);
 
 pingpong.controller('MatchCreateCtrl', ['$scope', '$http', '$location', Matches.MatchCreateCtrl]);
+
+pingpong.controller('PlayerListCtrl', Players.PlayerListCtrl);
 
 pingpong.controller('PlayerDetailCtrl', ['$scope', '$routeParams', '$http', '$location', Players.PlayerDetailCtrl]);
 

@@ -60,18 +60,16 @@ module Matches {
 			console.log(JSON.stringify(data));
 
 			$http.post('api/matches', data).success(function(data: Players.IPlayer) {
-				//$location.path('players/' + data.name);
+				$location.path('matches');
 
 			}).error(function(error, status) {
-				alert('Error: ' + error);
+				alert('Error: ' + error.message);
 				console.log(arguments);
 			});
 		};
 
 		$http.get('api/players').success(function(data: Players.IPlayer[]) {
-			// FIXME: uncomment if when API is ready
-			if (typeof data === 'object')
-				$scope.players = data;
+			$scope.players = data;
 		});
 	}
 }
