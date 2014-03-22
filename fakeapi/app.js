@@ -40,7 +40,7 @@ server.get('/api/players/:name', function (req, res, next) {
 
 
 server.get(/\/?.*/, restify.serveStatic({
-   directory: '../',
+   directory: './dist',
    default: 'index.html'
 }));
 
