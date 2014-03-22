@@ -1,0 +1,19 @@
+{
+  "name": "pingpong",
+  "version": "1.0.0",
+  "description": "",
+  "main": "fakeapi/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/gipsy-king/pingpongwinners.git"
+  },
+  "author": "",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/gipsy-king/pingpongwinners/issues"
+  },
+  "homepage": "https://github.com/gipsy-king/pingpongwinners"
+}
