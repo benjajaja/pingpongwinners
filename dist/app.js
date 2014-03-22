@@ -87,7 +87,7 @@ var Players;
             $http.post('api/players/' + $scope.player.name, $scope.player).success(function (data) {
                 $location.path('players/' + data.name);
             }).error(function (error, status) {
-                alert('Error: ' + error);
+                alert('Error: ' + error.message);
                 console.log(arguments);
             });
         };
