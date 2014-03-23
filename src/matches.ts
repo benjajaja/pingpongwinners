@@ -1,35 +1,19 @@
+/// <reference path="matches/IMatch.ts" />
+/// <reference path="matches/IResult.ts" />
+/// <reference path="matches/INewMatch.ts" />
+
 interface IMatchListScope extends ng.IScope {
-	matches: Matches.IMatch[];
+	matches: matches.IMatch[];
 }
 
-interface IMatchCreateScope extends ng.IScope, INewMatch {
-	players: Players.IPlayer[];
-	time: Date;
+interface IMatchCreateScope extends ng.IScope, matches.INewMatch {
+	players: players.IPlayer[];
+	dateDate: Date;
+	dateDime: Date;
 	submit: Function;
 }
 
-interface IResult {
-	winnerPoints: number;
-	loserPoints: number;
-}
-
-
-
-interface INewMatch {
-	date: Date;
-	winner: string;
-	loser: string;
-	result: IResult;
-}
-
-module Matches {
-
-	export interface IMatch {
-		date: string;
-		winner: Players.IPlayer;
-		loser: Players.IPlayer;
-		result: IResult;
-	}
+module matches {
 
 	export function MatchListCtrl($scope: IMatchListScope, $http: ng.IHttpService) {
 		$http.get('api/matches').success(function(data: IMatch[]) {
@@ -44,8 +28,8 @@ module Matches {
 	export function MatchCreateCtrl($scope: IMatchCreateScope, $http: ng.IHttpService, $location: ng.ILocationService) {
 
 		$scope.submit = function() {
-			var data:INewMatch = {
-				date: new Date($scope.date.getTime() + ($scope.time.getHours() * 3600000 + $scope.time.getMinutes() * 60000)),
+			var data:matches.INewMatch = {
+				date: (new Date($scope.dateDate.getTime() + ($scope.dateDime.getHours() * 3600000 + $scope.dateDime.getMinutes() * 60000))).toISOString(),
 			 	winner: $scope.winner,
 			 	loser: $scope.loser,
 			 	result: $scope.result
@@ -53,13 +37,13 @@ module Matches {
 
 			console.log(JSON.stringify(data));
 
-			$http.post('api/matches', data).success(function(data: Players.IPlayer) {
+			$http.post('api/matches', data).success(function() {
 				$location.path('matches');
 
 			});
 		};
 
-		$http.get('api/players').success(function(data: Players.IPlayer[]) {
+		$http.get('api/players').success(function(data: players.IPlayer[]) {
 			$scope.players = data;
 		});
 	}

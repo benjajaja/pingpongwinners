@@ -1,5 +1,5 @@
-
-
+/// <reference path="players/IPlayer.ts" />
+/// <reference path="players/IDetailPlayer.ts" />
 
 
 interface IPlayerDetailParams {
@@ -7,29 +7,25 @@ interface IPlayerDetailParams {
 }
 
 interface IPlayerListScope extends ng.IScope {
-	players: Players.IPlayer[];
+	players: players.IPlayer[];
 }
 
 interface IPlayerScope extends ng.IScope {
-	player: Players.IPlayer;
+	player: players.IPlayer;
 	archenemies: {
-		mostPlayed:Players.IPlayer;
-		mostDefeated:Players.IPlayer;
+		mostPlayed:players.IPlayer;
+		mostDefeated:players.IPlayer;
 	};
 }
 
 interface IPlayerCreateScope extends ng.IScope {
-	player: Players.IPlayer;
+	player: players.IPlayer;
 	submit: Function;
 }
 
 
-interface IDetailPlayer extends Players.IPlayer {
-	matches: Matches.IMatch[];
-}
-
 interface IEnemy {
-	player: Players.IPlayer;
+	player: players.IPlayer;
 	victories:number;
 	defeats:number;
 	total:number;
@@ -115,14 +111,7 @@ function donutGraph(id:string, data:{name:string;value:any}[]) {
 
 }
 
-module Players {
-
-	export interface IPlayer {
-		name: string;
-		fullName: string;
-	}
-
-
+module players {
 
 	export function PlayerListCtrl($scope: IPlayerListScope, $http: ng.IHttpService) {
 		$http.get('api/players').success(function(data: IPlayer[]) {
@@ -144,7 +133,7 @@ module Players {
 			lineGraph('chart-tendence', matchEvolutionData);
 
 
-			var enemies = player.matches.reduce(function(enemies:IEnemy[], match:Matches.IMatch) : IEnemy[] {
+			var enemies = player.matches.reduce(function(enemies:IEnemy[], match:matches.IMatch) : IEnemy[] {
 				var isOpponentLoser = match.winner.name === player.name;
 				var opponent = (isOpponentLoser ? match.loser : match.winner);
 
@@ -201,7 +190,7 @@ module Players {
 			fullName: ''
 		};
 		$scope.submit = function() {
-			$http.post('api/players/' + $scope.player.name, $scope.player).success(function(data: IPlayer) {
+			$http.post('api/players', $scope.player).success(function(data: IPlayer) {
 				$location.path('players/' + data.name);
 			});
 		};

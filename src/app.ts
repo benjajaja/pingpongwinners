@@ -3,9 +3,9 @@
 /// <reference path="../typings/moment/moment.d.ts" />
 /// <reference path="../typings/d3/d3.d.ts" />
 
-/// <reference path="Navbar.ts" />
-/// <reference path="Matches.ts" />
-/// <reference path="Players.ts" />
+/// <reference path="navbar.ts" />
+/// <reference path="matches.ts" />
+/// <reference path="players.ts" />
 
 interface IProgress {
 	start: () => void;
@@ -101,14 +101,14 @@ pingpong.config(function($routeProvider: ng.route.IRouteProvider, $httpProvider:
 
 
 
-pingpong.controller('NavbarCtrl', Navbar.NavbarCtrl);
+pingpong.controller('NavbarCtrl', navbar.NavbarCtrl);
 
-pingpong.controller('MatchListCtrl', Matches.MatchListCtrl);
+pingpong.controller('MatchListCtrl', matches.MatchListCtrl);
 
-pingpong.controller('MatchCreateCtrl', Matches.MatchCreateCtrl);
+pingpong.controller('MatchCreateCtrl', matches.MatchCreateCtrl);
 
-pingpong.controller('PlayerListCtrl', Players.PlayerListCtrl);
+pingpong.controller('PlayerListCtrl', players.PlayerListCtrl);
 
-pingpong.controller('PlayerDetailCtrl', Players.PlayerDetailCtrl);
+pingpong.controller('PlayerDetailCtrl', players.PlayerDetailCtrl);
 
-pingpong.controller('PlayerCreateCtrl', Players.PlayerCreateCtrl);
+pingpong.controller('PlayerCreateCtrl', players.PlayerCreateCtrl);

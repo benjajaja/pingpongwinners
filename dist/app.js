@@ -1,12 +1,16 @@
-var Navbar;
-(function (Navbar) {
+var navbar;
+(function (navbar) {
     function NavbarCtrl($scope) {
         $scope.isCollapsed = true;
     }
-    Navbar.NavbarCtrl = NavbarCtrl;
-})(Navbar || (Navbar = {}));
-var Matches;
-(function (Matches) {
+    navbar.NavbarCtrl = NavbarCtrl;
+})(navbar || (navbar = {}));
+/// <reference path="matches/IMatch.ts" />
+/// <reference path="matches/IResult.ts" />
+/// <reference path="matches/INewMatch.ts" />
+
+var matches;
+(function (matches) {
     function MatchListCtrl($scope, $http) {
         $http.get('api/matches').success(function (data) {
             $scope.matches = data.map(function (match) {
@@ -16,12 +20,12 @@ var Matches;
             });
         });
     }
-    Matches.MatchListCtrl = MatchListCtrl;
+    matches.MatchListCtrl = MatchListCtrl;
 
     function MatchCreateCtrl($scope, $http, $location) {
         $scope.submit = function () {
             var data = {
-                date: new Date($scope.date.getTime() + ($scope.time.getHours() * 3600000 + $scope.time.getMinutes() * 60000)),
+                date: (new Date($scope.dateDate.getTime() + ($scope.dateDime.getHours() * 3600000 + $scope.dateDime.getMinutes() * 60000))).toISOString(),
                 winner: $scope.winner,
                 loser: $scope.loser,
                 result: $scope.result
@@ -29,7 +33,7 @@ var Matches;
 
             console.log(JSON.stringify(data));
 
-            $http.post('api/matches', data).success(function (data) {
+            $http.post('api/matches', data).success(function () {
                 $location.path('matches');
             });
         };
@@ -38,8 +42,11 @@ var Matches;
             $scope.players = data;
         });
     }
-    Matches.MatchCreateCtrl = MatchCreateCtrl;
-})(Matches || (Matches = {}));
+    matches.MatchCreateCtrl = MatchCreateCtrl;
+})(matches || (matches = {}));
+/// <reference path="players/IPlayer.ts" />
+/// <reference path="players/IDetailPlayer.ts" />
+
 function lineGraph(id, data) {
     var width = document.getElementById(id).clientWidth;
     var height = Math.floor(width / 3);
@@ -97,14 +104,14 @@ function donutGraph(id, data) {
     });
 }
 
-var Players;
-(function (Players) {
+var players;
+(function (players) {
     function PlayerListCtrl($scope, $http) {
         $http.get('api/players').success(function (data) {
             $scope.players = data;
         });
     }
-    Players.PlayerListCtrl = PlayerListCtrl;
+    players.PlayerListCtrl = PlayerListCtrl;
 
     function PlayerDetailCtrl($scope, $routeParams, $http, $location) {
         $http.get('api/players/' + $routeParams.name).success(function (player) {
@@ -170,7 +177,7 @@ var Players;
             donutGraph('chart-archenemy-lost', [{ name: 'Derrotas', value: mostDefeated.victories }, { name: 'Victorias', value: mostDefeated.defeats }]);
         });
     }
-    Players.PlayerDetailCtrl = PlayerDetailCtrl;
+    players.PlayerDetailCtrl = PlayerDetailCtrl;
 
     function PlayerCreateCtrl($scope, $http, $location) {
         $scope.player = {
@@ -178,20 +185,20 @@ var Players;
             fullName: ''
         };
         $scope.submit = function () {
-            $http.post('api/players/' + $scope.player.name, $scope.player).success(function (data) {
+            $http.post('api/players', $scope.player).success(function (data) {
                 $location.path('players/' + data.name);
             });
         };
     }
-    Players.PlayerCreateCtrl = PlayerCreateCtrl;
-})(Players || (Players = {}));
+    players.PlayerCreateCtrl = PlayerCreateCtrl;
+})(players || (players = {}));
 /// <reference path="../typings/angularjs/angular.d.ts" />
 /// <reference path="../typings/angularjs/angular-route.d.ts" />
 /// <reference path="../typings/moment/moment.d.ts" />
 /// <reference path="../typings/d3/d3.d.ts" />
-/// <reference path="Navbar.ts" />
-/// <reference path="Matches.ts" />
-/// <reference path="Players.ts" />
+/// <reference path="navbar.ts" />
+/// <reference path="matches.ts" />
+/// <reference path="players.ts" />
 
 moment.lang('es');
 
@@ -258,15 +265,15 @@ pingpong.config(function ($routeProvider, $httpProvider) {
     });
 });
 
-pingpong.controller('NavbarCtrl', Navbar.NavbarCtrl);
+pingpong.controller('NavbarCtrl', navbar.NavbarCtrl);
 
-pingpong.controller('MatchListCtrl', Matches.MatchListCtrl);
+pingpong.controller('MatchListCtrl', matches.MatchListCtrl);
 
-pingpong.controller('MatchCreateCtrl', Matches.MatchCreateCtrl);
+pingpong.controller('MatchCreateCtrl', matches.MatchCreateCtrl);
 
-pingpong.controller('PlayerListCtrl', Players.PlayerListCtrl);
+pingpong.controller('PlayerListCtrl', players.PlayerListCtrl);
 
-pingpong.controller('PlayerDetailCtrl', Players.PlayerDetailCtrl);
+pingpong.controller('PlayerDetailCtrl', players.PlayerDetailCtrl);
 
-pingpong.controller('PlayerCreateCtrl', Players.PlayerCreateCtrl);
+pingpong.controller('PlayerCreateCtrl', players.PlayerCreateCtrl);
 //# sourceMappingURL=app.js.map

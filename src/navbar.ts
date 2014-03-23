@@ -3,7 +3,7 @@ interface INavBarScope extends ng.IScope {
 	isCollapsed: boolean;
 }
 
-module Navbar {
+module navbar {
 	export function NavbarCtrl($scope: INavBarScope) {
 		$scope.isCollapsed = true;
 	}
