@@ -23,6 +23,7 @@ interface INewMatch {
 }
 
 module Matches {
+
 	export interface IMatch {
 		date: string;
 		winner: Players.IPlayer;
@@ -41,21 +42,6 @@ module Matches {
 	}
 
 	export function MatchCreateCtrl($scope: IMatchCreateScope, $http: ng.IHttpService, $location: ng.ILocationService) {
-		$scope.players = [{
-			"name": "benja",
-			"fullName": "Benjamin der Grosse",
-			"totalMatches": 9001,
-			"victories": 9000,
-			"defeats": 1,
-			"avatarURL": "http://img1.wikia.nocookie.net/__cb20130514210844/sarugetchu/images/b/b1/ApeWelcome.png"
-		}, {
-			"name": "oscar",
-			"fullName": "Oscar bob esponja",
-			"totalMatches": 9001,
-			"victories": 9000,
-			"defeats": 1,
-			"avatarURL": "http://img1.wikia.nocookie.net/__cb20130514210844/sarugetchu/images/b/b1/ApeWelcome.png"
-		}];
 
 		$scope.submit = function() {
 			var data:INewMatch = {

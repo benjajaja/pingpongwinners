@@ -9,24 +9,36 @@
     <h3 class="panel-title">Partidas</h3>
   </div>
   <div class="panel-body">
-  	<div class="row">
-  		<dl class="col-md-4">
-	    	<dt>Total de partidas:</dt>
-	    	<dd>{{player.totalMatches}}</dd>
-	    </dl>
-	    <dl class="col-md-4">
-	    	<dt>Victorias:</dt>
-	    	<dd>{{player.victories}}</dd>
-	    </dl>
-	    <dl class="col-md-4">
-	    	<dt>Derrotas:</dt>
-	    	<dd>{{player.defeats}}</dd>
-	    </dl>
-	</div>
-
+	<dl class="row">
+    	<dt class="col-md-4 col-xs-2">Victorias:</dt>
+    	<dd class="col-md-4 col-xs-2">{{player.victories}}</dd>
+    	<dt class="col-md-4 col-xs-2">Derrotas:</dt>
+    	<dd class="col-md-4 col-xs-2">{{player.defeats}}</dd>
+    	<dt class="col-md-4 col-xs-2">Total:</dt>
+    	<dd class="col-md-4 col-xs-2">{{player.totalMatches}}</dd>
+    </dl>
+  </div>
+</div>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Estadística</h3>
+  </div>
+  <div class="panel-body">
 	<strong>Evolución</strong>
 	<div>
 		<svg id="chart-tendence"></svg>
+	</div>
+
+	<strong>Archienemigos</strong>
+	<div class="row">
+		<div class="col-xs-6">
+			<div>Por cantidad de partidas: <strong><a href="#/players/{{archenemies.mostPlayed.name}}">{{archenemies.mostPlayed.fullName}}</a></strong></div>
+			<svg id="chart-archenemy-played"></svg>
+		</div>
+		<div class="col-xs-6">
+			<div>Por derrotas: <strong><a href="#/players/{{archenemies.mostPlayed.name}}">{{archenemies.mostDefeated.fullName}}</a></strong></div>
+			<svg id="chart-archenemy-lost"></svg>
+		</div>
 	</div>
   </div>
 </div>
