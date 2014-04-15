@@ -6,7 +6,7 @@ require 'Slim/Slim.php';
 $app = new \Slim\Slim();
 
 $app->get('/players', function () {
-				   $con=mysqli_connect("localhost","root","root","idkpong");
+				   $con=mysqli_connect("localhost","root","","idkpong");
 				// Check connection
 				if (mysqli_connect_errno())
 				  {
@@ -30,7 +30,7 @@ $app->get('/players', function () {
 });
 
 $app->get('/players/:player', function ($playerID) {
-				$con=mysqli_connect("localhost","root","root","idkpong");
+				$con=mysqli_connect("localhost","root","","idkpong");
 				// Check connection
 				if (mysqli_connect_errno())
 				  {
@@ -51,13 +51,14 @@ $app->get('/players/:player', function ($playerID) {
 });
 
 $app->post('/players', function () use ($app){
-				   $con=mysqli_connect("localhost","root","root","idkpong");
+				   $con=mysqli_connect("localhost","root","","idkpong");
 				// Check connection
 				if (mysqli_connect_errno())
 				  {
 				  echo "Failed to connect to MySQL: " . mysqli_connect_error();
 				  }
-				mysqli_query($con,"INSERT INTO players (name, fullName) VALUES ('" . $app->request()->params('name') . "', '". $app->request()->params('fullName') . "')");
+				  $json = json_decode(file_get_contents('php://input'),true);
+				mysqli_query($con,"INSERT INTO players (name, fullName) VALUES ('" . $json["name"] . "', '". $json["fullName"] . "')");
 				mysqli_close($con);
 				$matches["code"] = 200;
 				echo json_encode($matches);
@@ -65,7 +66,7 @@ $app->post('/players', function () use ($app){
 
 function getMatchesForUser($user)
 {
-	   $con=mysqli_connect("localhost","root","root","idkpong");
+	   $con=mysqli_connect("localhost","root","","idkpong");
 				// Check connection
 				if (mysqli_connect_errno())
 				  {
@@ -89,7 +90,7 @@ function getMatchesForUser($user)
 }
 
 $app->get('/matches', function () {
-				   $con=mysqli_connect("localhost","root","root","idkpong");
+				   $con=mysqli_connect("localhost","root","","idkpong");
 				// Check connection
 				if (mysqli_connect_errno())
 				  {
@@ -115,17 +116,20 @@ $app->get('/matches', function () {
 });
 
 $app->post('/matches', function () use ($app){
-				   $con=mysqli_connect("localhost","root","root","idkpong");
+				  $con=mysqli_connect("localhost","root","","idkpong");
 				// Check connection
 				if (mysqli_connect_errno())
 				  {
 				  echo "Failed to connect to MySQL: " . mysqli_connect_error();
 				  }
-				  $winnerID = getPlayerWithName($app->request()->params('winner'));
-				  $loserID = getPlayerWithName($app->request()->params('loser'));
-				  $date = getPlayerWithName($app->request()->params('date'));
-				  $winnerPoints = getPlayerWithName($app->request()->params('winnerPoints'));
-				  $loserPoints = getPlayerWithName($app->request()->params('loserPoints'));
+
+
+				  $json = json_decode(file_get_contents('php://input'),true);
+				  $winnerID = getPlayerWithName($json["winner"]);
+				  $loserID = getPlayerWithName($json["loser"]);
+				  $date = $app->request()->params('date');
+				  $winnerPoints = $json["result"]["winnerPoints"];
+				  $loserPoints = $json["result"]["loserPoints"];
 
 
 				mysqli_query($con,"INSERT INTO matches (winner, loser,date,winnerPoints,loserPoints) VALUES ('" . $winnerID . "', '". $loserID . "' , '". $date . "', '". $winnerPoints . "', '". $loserPoints . "')");
@@ -140,7 +144,7 @@ $app->run();
 
 function getPlayerWithID($id)
 {
-	$con=mysqli_connect("localhost","root","root","idkpong");
+	$con=mysqli_connect("localhost","root","","idkpong");
 				// Check connection
 				if (mysqli_connect_errno())
 				  {
@@ -162,7 +166,7 @@ function getPlayerWithID($id)
 
 function getPlayerWithName($name)
 {
-	$con=mysqli_connect("localhost","root","root","idkpong");
+	$con=mysqli_connect("localhost","root","","idkpong");
 				// Check connection
 				if (mysqli_connect_errno())
 				  {
