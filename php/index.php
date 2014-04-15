@@ -50,17 +50,18 @@ $app->get('/players/:player', function ($playerID) {
 				 }
 });
 
-/*$app->post('/players', function () {
+$app->post('/players', function () use ($app){
 				   $con=mysqli_connect("localhost","root","root","idkpong");
 				// Check connection
 				if (mysqli_connect_errno())
 				  {
 				  echo "Failed to connect to MySQL: " . mysqli_connect_error();
 				  }
-				  print $app->config('app.version');
-				//mysqli_query($con,"INSERT INTO players (name, fullName) VALUES ('" . $app->request()->params('name') . "', '". $app->request()->params('fullName') . "')");
+				mysqli_query($con,"INSERT INTO players (name, fullName) VALUES ('" . $app->request()->params('name') . "', '". $app->request()->params('fullName') . "')");
 				mysqli_close($con);
-});*/
+				$matches["code"] = 200;
+				echo json_encode($matches);
+});
 
 function getMatchesForUser($user)
 {
@@ -113,6 +114,26 @@ $app->get('/matches', function () {
 				echo json_encode($matches);
 });
 
+$app->post('/matches', function () use ($app){
+				   $con=mysqli_connect("localhost","root","root","idkpong");
+				// Check connection
+				if (mysqli_connect_errno())
+				  {
+				  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+				  }
+				  $winnerID = getPlayerWithName($app->request()->params('winner'));
+				  $loserID = getPlayerWithName($app->request()->params('loser'));
+				  $date = getPlayerWithName($app->request()->params('date'));
+				  $winnerPoints = getPlayerWithName($app->request()->params('winnerPoints'));
+				  $loserPoints = getPlayerWithName($app->request()->params('loserPoints'));
+
+
+				mysqli_query($con,"INSERT INTO matches (winner, loser,date,winnerPoints,loserPoints) VALUES ('" . $winnerID . "', '". $loserID . "' , '". $date . "', '". $winnerPoints . "', '". $loserPoints . "')");
+				mysqli_close($con);
+				$matches["code"] = 200;
+				echo json_encode($matches);
+});
+
 
 
 $app->run();
@@ -137,9 +158,26 @@ function getPlayerWithID($id)
 				  	mysqli_close($con);
 				  return $player;
 				  }
+}
 
-				
+function getPlayerWithName($name)
+{
+	$con=mysqli_connect("localhost","root","root","idkpong");
+				// Check connection
+				if (mysqli_connect_errno())
+				  {
+				  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+				  }
 
+				$result = mysqli_query($con,"SELECT * FROM players WHERE name = '" . $name . "'");
+
+				$players = array();
+
+				while($row = mysqli_fetch_array($result))
+				  {
+				  	mysqli_close($con);
+				  return $row["id"];
+				  }
 }
 
 ?>
