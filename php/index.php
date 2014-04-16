@@ -80,8 +80,10 @@ function getMatchesForUser($user)
 				  	$match["winner"] = getPlayerWithID($row["winner"]);
 				  	$match["loser"] = getPlayerWithID($row["loser"]);
 				  	$match["date"] = gmdate("c", strtotime($row["date"]));
-				  	$match["winnerpoints"] = $row["winnerpoints"];
-				  	$match["loserpoints"] = $row["loserpoints"];
+				  	$resultado = array();
+				  	$resultado["winnerPoints"] = $row["winnerpoints"];
+				  	$resultado["loserPoints"] = $row["loserpoints"];
+				  	$match["result"] = $resultado;
 				  array_push($matches, $match);
 				  }
 
@@ -105,9 +107,10 @@ $app->get('/matches', function () {
 				  	$match["winner"] = getPlayerWithID($row["winner"]);
 				  	$match["loser"] = getPlayerWithID($row["loser"]);
 				  	$match["date"] = $row["date"];
-				  	$match["winnerpoints"] = $row["winnerpoints"];
-				  	$match["loserpoints"] = $row["loserpoints"];
-				  array_push($matches, $match);
+				  	$resultado["winnerPoints"] = $row["winnerpoints"];
+				  	$resultado["loserPoints"] = $row["loserpoints"];
+				  	$match["result"] = $resultado;
+ 				  array_push($matches, $match);
 				  }
 
 				mysqli_close($con);
