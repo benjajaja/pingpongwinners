@@ -47,6 +47,7 @@ $app->get('/players/:player', function ($playerID) {
 				  	$player["matches"] = getMatchesForUser($row["id"]);
 				  	//mysqli_close($con);
 				  echo json_encode($player);
+				  break;
 				 }
 });
 
