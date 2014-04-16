@@ -9,7 +9,7 @@ interface IMatchListScope extends ng.IScope {
 interface IMatchCreateScope extends ng.IScope, matches.INewMatch {
 	players: players.IPlayer[];
 	dateDate: Date;
-	dateDime: Date;
+	dateTime: Date;
 	submit: Function;
 }
 
@@ -29,7 +29,7 @@ module matches {
 
 		$scope.submit = function() {
 			var data:matches.INewMatch = {
-				date: (new Date($scope.dateDate.getTime() + ($scope.dateDime.getHours() * 3600000 + $scope.dateDime.getMinutes() * 60000))).toISOString(),
+				date: (new Date($scope.dateDate.getTime() + ($scope.dateTime.getHours() * 3600000 + $scope.dateTime.getMinutes() * 60000))).toISOString(),
 			 	winner: $scope.winner,
 			 	loser: $scope.loser,
 			 	result: $scope.result
