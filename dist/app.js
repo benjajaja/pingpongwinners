@@ -23,9 +23,15 @@ var matches;
     matches.MatchListCtrl = MatchListCtrl;
 
     function MatchCreateCtrl($scope, $http, $location) {
+        $scope.dateDate = new Date();
+        $scope.dateTime = new Date();
+
         $scope.submit = function () {
+            if (!$scope.winner || !$scope.loser || !$scope.result) {
+                return alert('Debes rellenar todo');
+            }
             var data = {
-                date: (new Date($scope.dateDate.getTime() + ($scope.dateDime.getHours() * 3600000 + $scope.dateDime.getMinutes() * 60000))).toISOString(),
+                date: (new Date($scope.dateDate.getTime() + ($scope.dateTime.getHours() * 3600000 + $scope.dateTime.getMinutes() * 60000))).toISOString(),
                 winner: $scope.winner,
                 loser: $scope.loser,
                 result: $scope.result
@@ -186,7 +192,7 @@ var players;
         };
         $scope.submit = function () {
             $http.post('api/players', $scope.player).success(function (data) {
-                $location.path('players/' + data.name);
+                $location.path('players/' + $scope.player.name);
             });
         };
     }
