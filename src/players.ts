@@ -191,7 +191,7 @@ module players {
 		};
 		$scope.submit = function() {
 			$http.post('api/players', $scope.player).success(function(data: IPlayer) {
-				$location.path('players/' + data.name);
+				$location.path('players/' + $scope.player.name);
 			});
 		};
 	}
