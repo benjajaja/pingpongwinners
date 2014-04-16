@@ -31,6 +31,9 @@ module matches {
 		$scope.dateTime = new Date();
 
 		$scope.submit = function() {
+			if (!$scope.winner || !$scope.loser || !$scope.result) {
+				return alert('Debes rellenar todo');
+			}
 			var data:matches.INewMatch = {
 				date: (new Date($scope.dateDate.getTime() + ($scope.dateTime.getHours() * 3600000 + $scope.dateTime.getMinutes() * 60000))).toISOString(),
 			 	winner: $scope.winner,
