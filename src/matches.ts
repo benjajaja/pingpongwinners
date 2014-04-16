@@ -27,6 +27,9 @@ module matches {
 
 	export function MatchCreateCtrl($scope: IMatchCreateScope, $http: ng.IHttpService, $location: ng.ILocationService) {
 
+		$scope.dateDate = new Date();
+		$scope.dateTime = new Date();
+
 		$scope.submit = function() {
 			var data:matches.INewMatch = {
 				date: (new Date($scope.dateDate.getTime() + ($scope.dateTime.getHours() * 3600000 + $scope.dateTime.getMinutes() * 60000))).toISOString(),
