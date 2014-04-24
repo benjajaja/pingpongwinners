@@ -60,10 +60,15 @@ pingpong.config(function($routeProvider: ng.route.IRouteProvider, $httpProvider:
 	});
 
 	$httpProvider.interceptors.push(function($q: ng.IQService, $injector: ng.auto.IInjectorService) {
+		var apiBaseURL = '';
+		if (window.location.toString().indexOf('file://') === 0) {
+			apiBaseURL = 'http://ijusaba.com/';
+		}
 
 	    return {
 	    	'request': function(config: any) {
 	    		if (config.url.indexOf('api/') === 0) {
+	    			config.url = apiBaseURL + config.url;
 		        	$injector.invoke(function(ngProgress: IProgress) {
 		        		ngProgress.stop();
 		        		ngProgress.start();
@@ -74,7 +79,7 @@ pingpong.config(function($routeProvider: ng.route.IRouteProvider, $httpProvider:
 	    	},
 
 	    	'response': function(response: ng.IHttpPromiseCallbackArg<any>) {
-	    		if (response.config.url.indexOf('api/') === 0) {
+	    		if (response.config.url.indexOf(apiBaseURL + 'api/') === 0) {
 	    			$injector.invoke(function(ngProgress: IProgress) {
 		        		ngProgress.complete();
 		        	});
@@ -84,7 +89,7 @@ pingpong.config(function($routeProvider: ng.route.IRouteProvider, $httpProvider:
 			},
 
 			'responseError': function(rejection: ng.IHttpPromiseCallbackArg<IServerError>) {
-				if (rejection.config.url.indexOf('api/') === 0) {
+				if (rejection.config.url.indexOf(apiBaseURL + 'api/') === 0) {
 					window.alert('Error: ' + rejection.data.message);
 					$injector.invoke(function(ngProgress: IProgress) {
 		        		ngProgress.reset();
