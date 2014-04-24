@@ -11,10 +11,10 @@ interface IPlayerListScope extends ng.IScope {
 }
 
 interface IPlayerScope extends ng.IScope {
-	player: players.IPlayer;
+	player: players.IDetailPlayer;
 	archenemies: {
-		mostPlayed:players.IPlayer;
-		mostDefeated:players.IPlayer;
+		mostPlayed: IEnemy;
+		mostDefeated: IEnemy;
 	};
 }
 
@@ -28,6 +28,7 @@ interface IEnemy {
 	player: players.IPlayer;
 	victories:number;
 	defeats:number;
+	score: number;
 	total:number;
 }
 
@@ -73,7 +74,7 @@ function lineGraph(id:string, data:{x:any;y:any}[]) {
 		.attr("stroke-dashoffset", 0);
 }
 
-function donutGraph(id:string, data:{name:string;value:any}[]) {
+function donutGraph(id:string, data:{name:string;value:any}[], score:number) {
 	var width = document.getElementById(id).clientWidth;
 	var height = width;
 	var radius = Math.min(width, height) / 2;
@@ -109,6 +110,12 @@ function donutGraph(id:string, data:{name:string;value:any}[]) {
 	      .style("text-anchor", "middle")
 	      .text(function(d:any) { return d.data.name; });
 
+	  g.append("text")
+	  	  .attr("dy", "20px")
+	  	  .style("font-size", "60px")
+	      .style("text-anchor", "middle")
+	      .text(''+score);
+
 }
 
 module players {
@@ -137,7 +144,7 @@ module players {
 				var isOpponentLoser = match.winner.name === player.name;
 				var opponent = (isOpponentLoser ? match.loser : match.winner);
 
-				var enemy = enemies.reduce(function(match:any, enemy:any) {
+				var enemy = enemies.reduce(function(match:IEnemy, enemy:IEnemy) {
 					if (enemy.player.name === opponent.name) return enemy;
 					else return match;
 				}, null);
@@ -147,18 +154,24 @@ module players {
 						player: opponent,
 						victories: 0,
 						defeats: 0,
+						score: 0,
 						total: 0
 					};
 					enemies.push(enemy);
 				}
 
 				enemy.total += 1;
-				enemy[isOpponentLoser ? 'defeats' : 'victories'] += 1;
+				if (isOpponentLoser) {
+					enemy.defeats += 1;
+				} else {
+					enemy.victories += 1;
+				}
+				enemy.score = enemy.defeats - enemy.victories;
 
 				return enemies;
 			}, []);
 			
-			var mostPlayed = enemies.reduce(function(most:any, enemy:any) {
+			var mostPlayed = enemies.reduce(function(most:IEnemy, enemy:IEnemy) {
 				if (most === null || enemy.total > most.total) {
 					return enemy;
 				} else {
@@ -166,7 +179,7 @@ module players {
 				}
 			}, null);
 			
-			var mostDefeated = enemies.reduce(function(most:any, enemy:any) {
+			var mostDefeated = enemies.reduce(function(most:IEnemy, enemy:IEnemy) {
 				if (most === null || enemy.victories > most.victories || 
 						(enemy.victories === most.victories && enemy.defeats < most.defeats)) {
 					return enemy;
@@ -175,12 +188,12 @@ module players {
 			}, null);
 
 			$scope.archenemies = {
-				mostPlayed: mostPlayed.player,
-				mostDefeated: mostDefeated.player
+				mostPlayed: mostPlayed,
+				mostDefeated: mostDefeated
 			};
 			console.log(mostDefeated)
-			donutGraph('chart-archenemy-played', [{name:'Derrotas', value: mostPlayed.victories}, {name:'Victorias', value: mostPlayed.defeats}]);
-			donutGraph('chart-archenemy-lost', [{name:'Derrotas', value: mostDefeated.victories}, {name:'Victorias', value: mostDefeated.defeats}]);
+			donutGraph('chart-archenemy-played', [{name:'Derrotas', value: mostPlayed.victories}, {name:'Victorias', value: mostPlayed.defeats}], mostPlayed.score);
+			donutGraph('chart-archenemy-lost', [{name:'Derrotas', value: mostDefeated.victories}, {name:'Victorias', value: mostDefeated.defeats}], mostDefeated.score);
 		});
 	}
 
