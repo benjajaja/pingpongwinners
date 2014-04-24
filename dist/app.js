@@ -24,20 +24,25 @@ var matches;
 
     function MatchCreateCtrl($scope, $http, $location) {
         $scope.dateDate = new Date();
+        $scope.dateDate.setHours(0);
+        $scope.dateDate.setMinutes(0);
+        $scope.dateDate.setSeconds(0);
+        $scope.dateDate.setMilliseconds(0);
         $scope.dateTime = new Date();
 
         $scope.submit = function () {
             if (!$scope.winner || !$scope.loser || !$scope.result) {
                 return alert('Debes rellenar todo');
             }
+
+            var timestamp = $scope.dateDate.getTime() + ($scope.dateTime.getHours() * 3600000 + $scope.dateTime.getMinutes() * 60000);
+
             var data = {
-                date: (new Date($scope.dateDate.getTime() + ($scope.dateTime.getHours() * 3600000 + $scope.dateTime.getMinutes() * 60000))).toISOString(),
+                date: (new Date(timestamp)).toISOString(),
                 winner: $scope.winner,
                 loser: $scope.loser,
                 result: $scope.result
             };
-
-            console.log(JSON.stringify(data));
 
             $http.post('api/matches', data).success(function () {
                 $location.path('matches');
@@ -82,7 +87,7 @@ function lineGraph(id, data) {
     path.attr("stroke-dasharray", totalLength + " " + totalLength).attr("stroke-dashoffset", totalLength).transition().duration(500).ease("cubic").attr("stroke-dashoffset", 0);
 }
 
-function donutGraph(id, data) {
+function donutGraph(id, data, score) {
     var width = document.getElementById(id).clientWidth;
     var height = width;
     var radius = Math.min(width, height) / 2;
@@ -108,6 +113,8 @@ function donutGraph(id, data) {
     }).attr("dy", ".35em").style("text-anchor", "middle").text(function (d) {
         return d.data.name;
     });
+
+    g.append("text").attr("dy", "20px").style("font-size", "60px").style("text-anchor", "middle").text('' + score);
 }
 
 var players;
@@ -148,13 +155,19 @@ var players;
                         player: opponent,
                         victories: 0,
                         defeats: 0,
+                        score: 0,
                         total: 0
                     };
                     enemies.push(enemy);
                 }
 
                 enemy.total += 1;
-                enemy[isOpponentLoser ? 'defeats' : 'victories'] += 1;
+                if (isOpponentLoser) {
+                    enemy.defeats += 1;
+                } else {
+                    enemy.victories += 1;
+                }
+                enemy.score = enemy.defeats - enemy.victories;
 
                 return enemies;
             }, []);
@@ -175,12 +188,12 @@ var players;
             }, null);
 
             $scope.archenemies = {
-                mostPlayed: mostPlayed.player,
-                mostDefeated: mostDefeated.player
+                mostPlayed: mostPlayed,
+                mostDefeated: mostDefeated
             };
             console.log(mostDefeated);
-            donutGraph('chart-archenemy-played', [{ name: 'Derrotas', value: mostPlayed.victories }, { name: 'Victorias', value: mostPlayed.defeats }]);
-            donutGraph('chart-archenemy-lost', [{ name: 'Derrotas', value: mostDefeated.victories }, { name: 'Victorias', value: mostDefeated.defeats }]);
+            donutGraph('chart-archenemy-played', [{ name: 'Derrotas', value: mostPlayed.victories }, { name: 'Victorias', value: mostPlayed.defeats }], mostPlayed.score);
+            donutGraph('chart-archenemy-lost', [{ name: 'Derrotas', value: mostDefeated.victories }, { name: 'Victorias', value: mostDefeated.defeats }], mostDefeated.score);
         });
     }
     players.PlayerDetailCtrl = PlayerDetailCtrl;
@@ -237,9 +250,15 @@ pingpong.config(function ($routeProvider, $httpProvider) {
     });
 
     $httpProvider.interceptors.push(function ($q, $injector) {
+        var apiBaseURL = '';
+        if (window.location.toString().indexOf('file://') === 0) {
+            apiBaseURL = 'http://ijusaba.com/';
+        }
+
         return {
             'request': function (config) {
                 if (config.url.indexOf('api/') === 0) {
+                    config.url = apiBaseURL + config.url;
                     $injector.invoke(function (ngProgress) {
                         ngProgress.stop();
                         ngProgress.start();
@@ -249,7 +268,7 @@ pingpong.config(function ($routeProvider, $httpProvider) {
                 return config || $q.when(config);
             },
             'response': function (response) {
-                if (response.config.url.indexOf('api/') === 0) {
+                if (response.config.url.indexOf(apiBaseURL + 'api/') === 0) {
                     $injector.invoke(function (ngProgress) {
                         ngProgress.complete();
                     });
@@ -258,7 +277,7 @@ pingpong.config(function ($routeProvider, $httpProvider) {
                 return response || $q.when(response);
             },
             'responseError': function (rejection) {
-                if (rejection.config.url.indexOf('api/') === 0) {
+                if (rejection.config.url.indexOf(apiBaseURL + 'api/') === 0) {
                     window.alert('Error: ' + rejection.data.message);
                     $injector.invoke(function (ngProgress) {
                         ngProgress.reset();
