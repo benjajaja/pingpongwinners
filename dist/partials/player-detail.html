@@ -32,11 +32,17 @@
 	<strong>Archienemigos</strong>
 	<div class="row">
 		<div class="col-xs-6">
-			<div>Por cantidad de partidas: <strong><a href="#/players/{{archenemies.mostPlayed.name}}">{{archenemies.mostPlayed.fullName}}</a></strong></div>
+			<div>
+				Por cantidad de partidas:
+				<strong><a href="#/players/{{archenemies.mostPlayed.player.name}}">{{archenemies.mostPlayed.player.fullName}}</a></strong>
+			</div>
 			<svg id="chart-archenemy-played"></svg>
 		</div>
 		<div class="col-xs-6">
-			<div>Por derrotas: <strong><a href="#/players/{{archenemies.mostPlayed.name}}">{{archenemies.mostDefeated.fullName}}</a></strong></div>
+			<div>
+				Por derrotas:
+				<strong><a href="#/players/{{archenemies.mostDefeated.player.name}}">{{archenemies.mostDefeated.player.fullName}}</a></strong>
+			</div>
 			<svg id="chart-archenemy-lost"></svg>
 		</div>
 	</div>
