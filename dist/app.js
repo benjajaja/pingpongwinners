@@ -59,20 +59,13 @@ var matches;
 /// <reference path="players/IDetailPlayer.ts" />
 
 function lineGraph(id, data) {
-    var width = document.getElementById(id).clientWidth;
+    var margin = { top: 10, right: 10, bottom: 10, left: 40 };
+    var width = document.getElementById(id).clientWidth - margin.left - margin.right;
     var height = Math.floor(width / 3);
 
-    var x = d3.time.scale().range([0, width - 10]);
+    var x = d3.time.scale().range([0, width - margin.left - margin.right]);
 
-    var y = d3.scale.linear().range([height - 10, 0]);
-
-    var line = d3.svg.line().interpolate("cardinal").x(function (d) {
-        return x(d.x);
-    }).y(function (d) {
-        return y(d.y);
-    });
-
-    var svg = d3.select('#' + id).attr("height", height).append('g').attr('width', width - 10).attr('height', height - 10).attr("transform", "translate(5, 5)");
+    var y = d3.scale.linear().range([height - margin.top - margin.bottom, 0]);
 
     x.domain(d3.extent(data, function (d) {
         return d.x;
@@ -80,6 +73,22 @@ function lineGraph(id, data) {
     y.domain(d3.extent(data, function (d) {
         return d.y;
     }));
+
+    var svg = d3.select('#' + id).attr("height", height + margin.top + margin.bottom).attr('width', width + margin.left + margin.right).append('g').attr('width', width).attr('height', height).attr("transform", "translate(" + (margin.left) + ", " + margin.top + ")");
+
+    var xAxis = d3.svg.axis().scale(x).orient('bottom').ticks(d3.time.days, 1).tickFormat(d3.time.format('%d/%m')).tickSize(0).tickPadding(8);
+
+    var yAxis = d3.svg.axis().scale(y).orient('left').tickPadding(8);
+
+    svg.append('g').attr('class', 'x axis').attr('transform', 'translate(0, ' + (height - margin.top - margin.bottom) + ')').call(xAxis);
+
+    svg.append('g').attr('class', 'y axis').call(yAxis);
+
+    var line = d3.svg.line().interpolate("basis").x(function (d) {
+        return x(d.x);
+    }).y(function (d) {
+        return y(d.y);
+    });
 
     var path = svg.append("path").attr("class", "line").attr("d", line(data));
 
