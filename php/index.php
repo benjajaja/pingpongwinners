@@ -73,7 +73,7 @@ function getMatchesForUser($user)
 				  {
 				  echo "Failed to connect to MySQL: " . mysqli_connect_error();
 				  }
-				$result = mysqli_query($con,"SELECT * FROM matches WHERE loser = '" . $user . "' OR winner = '" . $user . "'");
+				$result = mysqli_query($con,"SELECT * FROM matches WHERE loser = '" . $user . "' OR winner = '" . $user . "' ORDER BY fecha");
 				$matches = array();
 
 				while($row = mysqli_fetch_array($result))
