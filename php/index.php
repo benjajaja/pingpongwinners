@@ -109,7 +109,7 @@ function getWinsForUser($user)
 				  {
 				  echo "Failed to connect to MySQL: " . mysqli_connect_error();
 				  }
-				$result = mysqli_query($con,"SELECT * FROM matches WHERE loser = '" . $user . "' OR winner = '" . $user . "' ORDER BY fecha DESC LIMIT 10");
+				$result = mysqli_query($con,"SELECT * FROM matches WHERE loser = '" . $user . "' OR winner = '" . $user . "' ORDER BY fecha DESC");
 				$matches = array();
 
 				$win=0;
@@ -132,7 +132,7 @@ function getLosesForUser($user)
 				  {
 				  echo "Failed to connect to MySQL: " . mysqli_connect_error();
 				  }
-				$result = mysqli_query($con,"SELECT * FROM matches WHERE loser = '" . $user . "' OR winner = '" . $user . "' ORDER BY fecha DESC LIMIT 10");
+				$result = mysqli_query($con,"SELECT * FROM matches WHERE loser = '" . $user . "' OR winner = '" . $user . "' ORDER BY fecha DESC");
 				$matches = array();
 
 				$win=0;
