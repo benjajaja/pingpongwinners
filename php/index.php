@@ -154,7 +154,7 @@ $app->get('/matches', function () {
 				  {
 				  echo "Failed to connect to MySQL: " . mysqli_connect_error();
 				  }
-				$result = mysqli_query($con,"SELECT * FROM matches");
+				$result = mysqli_query($con,"SELECT * FROM matches ORDER BY fecha DESC");
 
 				$matches = array();
 
