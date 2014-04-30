@@ -45,6 +45,10 @@ $app->get('/players/:player', function ($playerID) {
 				  	$player["name"] = $row["name"];
 				  	$player["fullName"] = $row["fullName"];
 				  	$player["matches"] = getMatchesForUser($row["id"]);
+				  	$player["victories"] = getWinsForUser($row["id"]);
+				  	$player["defeats"] = getLosesForUser($row["id"]);
+				  	$player["totalMatches"] = getWinsForUser($row["id"]) +getLosesForUser($row["id"]);
+
 				  	//mysqli_close($con);
 				  echo json_encode($player);
 				  break;
@@ -73,11 +77,16 @@ function getMatchesForUser($user)
 				  {
 				  echo "Failed to connect to MySQL: " . mysqli_connect_error();
 				  }
-				$result = mysqli_query($con,"SELECT * FROM matches WHERE loser = '" . $user . "' OR winner = '" . $user . "' ORDER BY fecha");
+				$result = mysqli_query($con,"SELECT * FROM matches WHERE loser = '" . $user . "' OR winner = '" . $user . "' ORDER BY fecha DESC LIMIT 10");
 				$matches = array();
+
+				$win=0;
+				$los=0;
 
 				while($row = mysqli_fetch_array($result))
 				  {
+				  	if($user == $row["winner"])$win++;
+				  	if($user == $row["loser"])$los++;
 				  	$match["winner"] = getPlayerWithID($row["winner"]);
 				  	$match["loser"] = getPlayerWithID($row["loser"]);
 				  	$match["date"] = gmdate("c", strtotime($row["fecha"]));
@@ -90,6 +99,52 @@ function getMatchesForUser($user)
 
 				mysqli_close($con);
 				return $matches;
+}
+
+function getWinsForUser($user)
+{
+	$con=mysqli_connect("localhost","root","","idkpong");
+				// Check connection
+				if (mysqli_connect_errno())
+				  {
+				  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+				  }
+				$result = mysqli_query($con,"SELECT * FROM matches WHERE loser = '" . $user . "' OR winner = '" . $user . "' ORDER BY fecha DESC LIMIT 10");
+				$matches = array();
+
+				$win=0;
+				$los=0;
+
+				while($row = mysqli_fetch_array($result))
+				  {
+				  	if($user == $row["winner"])$win++;
+				  }
+
+				mysqli_close($con);
+				return $win;
+}
+
+function getLosesForUser($user)
+{
+	$con=mysqli_connect("localhost","root","","idkpong");
+				// Check connection
+				if (mysqli_connect_errno())
+				  {
+				  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+				  }
+				$result = mysqli_query($con,"SELECT * FROM matches WHERE loser = '" . $user . "' OR winner = '" . $user . "' ORDER BY fecha DESC LIMIT 10");
+				$matches = array();
+
+				$win=0;
+				$los=0;
+
+				while($row = mysqli_fetch_array($result))
+				  {
+				  	if($user == $row["loser"])$win++;
+				  }
+
+				mysqli_close($con);
+				return $win;
 }
 
 $app->get('/matches', function () {
